@@ -6,7 +6,7 @@ namespace AdventOfCode
     {
         private string[] Lines { get; set; }
         public Day1() {
-            Lines = File.ReadAllLines("../../../Day1.txt");
+            Lines = File.ReadAllLines("./Day1.txt");
         }
 
         public string SolveA () {

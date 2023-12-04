@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Repos\\advent-2023\\AdventOfCode2023\\AdventOfCode2023.csproj",
+      "projectUniqueName": "C:\\Repos\\advent-2023\\advent-2023\\AdventOfCode2023\\AdventOfCode2023.csproj",
       "projectName": "AdventOfCode2023",
-      "projectPath": "C:\\Repos\\advent-2023\\AdventOfCode2023\\AdventOfCode2023.csproj",
+      "projectPath": "C:\\Repos\\advent-2023\\advent-2023\\AdventOfCode2023\\AdventOfCode2023.csproj",
       "packagesPath": "C:\\Users\\CarriedeLacy\\.nuget\\packages\\",
-      "outputPath": "C:\\Repos\\advent-2023\\AdventOfCode2023\\obj\\",
+      "outputPath": "C:\\Repos\\advent-2023\\advent-2023\\AdventOfCode2023\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\CarriedeLacy\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -61,7 +61,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
       }
     }
   }
