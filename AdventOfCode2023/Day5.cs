@@ -5,14 +5,13 @@ namespace AdventOfCode
     public class Day5 : IDay
     {
         private string[] Lines { get; set; }
+
         public Day5() {
             Lines = File.ReadAllLines("./Day5.txt");
         }
 
-        public string SolveA ()
-        {
+        public string SolveA () {
             var seeds = Regex.Split(Lines[0], @"\D+").Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => long.Parse(x)).ToList();
-
             var seedToSoilMaps = CreateMap("seed-to-soil map:", 0, out var indexOfEndOfMap);
             var soilToFertilizerMaps = CreateMap("soil-to-fertilizer map:", indexOfEndOfMap, out indexOfEndOfMap);
             var fertilizerToWaterMaps = CreateMap("fertilizer-to-water map:", indexOfEndOfMap, out indexOfEndOfMap);
@@ -22,8 +21,7 @@ namespace AdventOfCode
             var humidityToLocationMaps = CreateMap("humidity-to-location map:", indexOfEndOfMap, out indexOfEndOfMap);
 
             long? nearestLocation = null;
-            foreach (var seed in seeds)
-            {
+            foreach (var seed in seeds) {
                 var soil = Map(seedToSoilMaps, seed);
                 var fertilizer = Map(soilToFertilizerMaps, soil);
                 var water = Map(fertilizerToWaterMaps, fertilizer);
@@ -37,17 +35,20 @@ namespace AdventOfCode
                 }
             }
 
+            if (!nearestLocation.HasValue) return "Fail: Location not found";
+
             return nearestLocation.Value.ToString();
         }
 
-        private long Map (List<Map> maps, long currentValue){
-            foreach (var map in maps){
-                if (map.sourceRangeStart < currentValue && currentValue < map.sourceRangeEnd) {
-                    return currentValue + map.valueToAdd;
+        private static long Map (List<Map> maps, long currentValue) {
+            var newValue = currentValue;
+            foreach (var map in maps) {
+                if (map.SourceRangeStart <= newValue && newValue <= map.SourceRangeEnd) {
+                    return newValue += map.Difference;
                 }
             }
 
-            return currentValue;
+            return newValue;
         }
 
         private List<Map> CreateMap(string mapToFind, int startIndex, out int indexOfEndOfMap)
@@ -56,28 +57,23 @@ namespace AdventOfCode
             var maps = new List<Map>();
             indexOfEndOfMap = 0;
 
-            for (int i = startIndex; i < Lines.Length; i++)
-            {
+            for (int i = startIndex; i < Lines.Length; i++) {
                 if (!mapFound && Lines[i].Contains(mapToFind)) {
                     mapFound = true;
-                    
                     continue;
                 }
 
-                // we are in a soil map so crate dictionary lookup based on values
-                if (mapFound && !string.IsNullOrWhiteSpace(Lines[i]))
-                {
+                if (mapFound && !string.IsNullOrWhiteSpace(Lines[i])) {
                     var input = Lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(x => long.Parse(x)).ToList();
                     var destinationRangeStart = input[0];
                     var sourceRangeStart = input[1];
                     var rangeLength = input[2];
 
-                    maps.Add(new AdventOfCode.Map(sourceRangeStart, sourceRangeStart + rangeLength - 1, destinationRangeStart, destinationRangeStart = rangeLength -1, destinationRangeStart - sourceRangeStart));
+                    maps.Add(new AdventOfCode.Map(sourceRangeStart, sourceRangeStart + rangeLength - 1, destinationRangeStart, destinationRangeStart + rangeLength - 1));
                 }
 
-                // finished with soil mapping
-                if (mapFound && string.IsNullOrWhiteSpace(Lines[i]))
-                {
+                // finished with mapping
+                if (mapFound && string.IsNullOrWhiteSpace(Lines[i])) {
                     indexOfEndOfMap = i;
                     break;
                 }
@@ -87,43 +83,81 @@ namespace AdventOfCode
         }
 
         public string SolveB () {
-            var totalCards = Lines.Length;
+            var seeds = Regex.Split(Lines[0], @"\D+").Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => long.Parse(x)).ToList();
+            var seedRanges = new List<SeedRange>();
+            for (int i = 0; i < seeds.Count; i+=2) {
+                seedRanges.Add(new SeedRange{SeedStart = seeds[i], SeedEnd = seeds[i] + seeds[i+1]});
+            }
 
+            var seedToSoilMaps = CreateMap("seed-to-soil map:", 0, out var indexOfEndOfMap);
+            var soilToFertilizerMaps = CreateMap("soil-to-fertilizer map:", indexOfEndOfMap, out indexOfEndOfMap);
+            var fertilizerToWaterMaps = CreateMap("fertilizer-to-water map:", indexOfEndOfMap, out indexOfEndOfMap);
+            var waterToLightMaps = CreateMap("water-to-light map:", indexOfEndOfMap, out indexOfEndOfMap);
+            var lightToTemperatureMaps = CreateMap("light-to-temperature map:", indexOfEndOfMap, out indexOfEndOfMap);
+            var temperatureToHumidityMaps = CreateMap("temperature-to-humidity map:", indexOfEndOfMap, out indexOfEndOfMap);
+            var humidityToLocationMaps = CreateMap("humidity-to-location map:", indexOfEndOfMap, out indexOfEndOfMap);
             
-            return totalCards.ToString();
+            // assuming it'll find it before long.MaxValue / 32 is reached, otherwise may have to re-consider strategy
+            for (long i = 0; i < long.MaxValue / 32; i++) {
+                var humidty = ReverseMap(humidityToLocationMaps, i);
+                var temperature = ReverseMap(temperatureToHumidityMaps, humidty);
+                var light = ReverseMap(lightToTemperatureMaps, temperature);
+                var water = ReverseMap(waterToLightMaps, light);
+                var fertilizer = ReverseMap(fertilizerToWaterMaps, water);
+                var soil = ReverseMap(soilToFertilizerMaps, fertilizer);
+                var seed = ReverseMap(seedToSoilMaps, soil);
+                if (HaveSeed(seed, seedRanges)) return i.ToString();
+            }
+
+            return "fail";
         }
 
-        private int FindNumberOfCards(List<int> losingCards, Dictionary<int, List<int>> winningCards, int gameId, int totalCardsMade)
-        {
-            if (losingCards.Contains(gameId)){
-                return totalCardsMade += 1;
+        private static bool HaveSeed(long seed, List<SeedRange> seedRanges) {
+            foreach (var map in seedRanges) {
+                if (map.SeedStart <= seed && seed <= map.SeedEnd) {
+                    return true;
+                }
             }
 
-            if (!winningCards.ContainsKey(gameId)) throw new Exception("Couldn't find the card!");
+            return false;
+        }
 
-            var cardsCreated = winningCards[gameId];
-            totalCardsMade += cardsCreated.Count;
-
-            foreach (var card in cardsCreated){
-                FindNumberOfCards(losingCards, winningCards, card, totalCardsMade);
+        private static long ReverseMap(List<Map> maps, long currentValue) {
+            var newValue = currentValue;
+            foreach (var map in maps) {
+                if (map.DestinationRangeStart <= newValue && newValue <= map.DestinationRangeEnd) {
+                    return newValue += map.ReverseDifference;
+                }
             }
 
-            return totalCardsMade;
+            return newValue;
         }
     }
 
-    public class Map{
-        public long sourceRangeStart { get; set; }
-        public long sourceRangeEnd { get; set; }
-        public long destinationRangeStart { get; set; }
-        public long destinationRangeEnd { get; set; }
-        public long valueToAdd { get; set; }
+    public class Map {
+        public long SourceRangeStart { get; set; }
 
-        public Map (long sourceRangeStart, long sourceRangeEnd, long destinationRangeStart, long destinationRangeEnd, long valueToAdd){
-            this.sourceRangeStart = sourceRangeStart;
-            this.sourceRangeEnd = sourceRangeEnd;
-            this.destinationRangeStart = destinationRangeStart;
-            this.valueToAdd = valueToAdd;
+        public long SourceRangeEnd { get; set; }
+
+        public long DestinationRangeStart { get; set; }
+
+        public long DestinationRangeEnd { get; set; }
+
+        public Map (long sourceRangeStart, long sourceRangeEnd, long destinationRangeStart, long destinationRangeEnd){
+            this.SourceRangeStart = sourceRangeStart;
+            this.SourceRangeEnd = sourceRangeEnd;
+            this.DestinationRangeStart = destinationRangeStart;
+            this.DestinationRangeEnd = destinationRangeEnd;
         }
+
+        public long Difference => DestinationRangeStart - SourceRangeStart;
+
+        public long ReverseDifference => SourceRangeStart - DestinationRangeStart;
+    }
+
+    public class SeedRange {
+        public long SeedStart { get; set; }
+
+        public long SeedEnd { get; set; }
     }
 }
