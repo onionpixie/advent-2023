@@ -36,17 +36,15 @@ namespace AdventOfCode
             var totalCards = Lines.Length;
             var losingCards = new List<int>();
             var winningCards = new Dictionary<int, List<int>>();
-            var numberOfCardsOfEachGame = new Dictionary<int, int>();
-            for (int i = Lines.Length - 1; i > 0; i--) {
+            var numberOfEachCardMade = new Dictionary<int, int>();
+            for (int i = Lines.Length - 1; i >= 0; i--) {
                 var gameId = Regex.Split(Lines[i].Split(':')[0], @"\D+").Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => int.Parse(x)).Single();
+                numberOfEachCardMade.Add(gameId, 1);
+
                 var cardData = Lines[i].Split(':')[1].Split('|');
                 var winningNumbers = Regex.Split(cardData[0], @"\D+").Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => int.Parse(x)).ToList();
                 var playersNumbers = Regex.Split(cardData[1], @"\D+").Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => int.Parse(x)).ToList();
                 var numberOfWinners = playersNumbers.Intersect(winningNumbers).Distinct().Count();
-                
-                if (!numberOfCardsOfEachGame.ContainsKey(gameId)){
-                    numberOfCardsOfEachGame.Add(gameId, 1);
-                }
                 
                 if (numberOfWinners == 0){
                     losingCards.Add(gameId);
@@ -55,46 +53,38 @@ namespace AdventOfCode
                 }
 
                 var cardsCreated = new List<int>();
-                for (int k = 1; k <= numberOfWinners; k++)
-                {
-                    numberOfCardsOfEachGame[gameId + k] += 1;
-                    if (losingCards.Contains(gameId + k)) 
+                
+                for (int k = 1; k <= numberOfWinners; k++) {
+                    numberOfEachCardMade = FindCardsCreated(numberOfEachCardMade, gameId + k, losingCards, winningCards);
                     cardsCreated.Add(gameId + k);
                 }
                 winningCards.Add(gameId, cardsCreated);
-
-
-                // foreach (var cardCreated in cardsCreated)
-                // {
-                //     totalCards += FindNumberOfCards(losingCards, winningCards, cardCreated, 0);
-                // }
-                
-            }
-var count = 0;
-            foreach (var entry in numberOfCardsOfEachGame)
-            {
-                count += Math.Max(1, winningCards[entry.Key].Count()) * numberOfCardsOfEachGame[entry.Key];
             }
             
-            return count.ToString();
+            var totalCardsMade = 0;
+            foreach (var entry in numberOfEachCardMade){
+                totalCardsMade += entry.Value;
+            }
+
+            return totalCardsMade.ToString();
         }
 
-        private int FindNumberOfCards(List<int> losingCards, Dictionary<int, List<int>> winningCards, int gameId, int totalCardsMade)
+        private Dictionary<int, int> FindCardsCreated(Dictionary<int, int> numberOfEachCardMade, int gameId, List<int> losingCards, Dictionary<int, List<int>> winningCards)
         {
+            numberOfEachCardMade[gameId] += 1;
+
             if (losingCards.Contains(gameId)){
-                return 1;
+                return numberOfEachCardMade;
             }
 
             if (!winningCards.ContainsKey(gameId)) throw new Exception("Couldn't find the card!");
 
             var cardsCreated = winningCards[gameId];
-            totalCardsMade += cardsCreated.Count;
-            var sum = 0;
-            foreach (var card in cardsCreated){
-                sum += FindNumberOfCards(losingCards, winningCards, card, totalCardsMade);
+            for (int k = 1; k <= cardsCreated.Count; k++) {
+                numberOfEachCardMade = FindCardsCreated(numberOfEachCardMade, gameId + k, losingCards, winningCards);
             }
 
-            return totalCardsMade + sum;
+            return numberOfEachCardMade;
         }
     }
 }

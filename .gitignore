@@ -124,3 +124,7 @@ $RECYCLE.BIN/
 
 # vs temp
 .vs
+
+bin
+obj
+packages
