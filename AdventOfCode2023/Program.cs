@@ -6,7 +6,7 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            var day = 8;
+            var day = 9;
             IDay dayClass;
             switch (day){
                 case 1:
@@ -33,6 +33,51 @@ namespace AdventOfCode
                 case 8:
                     dayClass = new Day8();
                     break;
+                case 9:
+                    dayClass = new Day9();
+                    break;
+                case 10:
+                    dayClass = new Day10();
+                    break;
+                case 11:
+                    dayClass = new Day11();
+                    break;
+                // case 12:
+                //     dayClass = new Day12();
+                //     break;
+                // case 13:
+                //     dayClass = new Day13();
+                //     break;
+                // case 14:
+                //     dayClass = new Day14();
+                //     break;
+                // case 15:
+                //     dayClass = new Day15();
+                //     break;
+                // case 16:
+                //     dayClass = new Day16();
+                //     break;
+                // case 17:
+                //     dayClass = new Day17();
+                //     break;
+                // case 18:
+                //     dayClass = new Day18();
+                //     break;
+                // case 19:
+                //     dayClass = new Day19();
+                //     break;
+                // case 20:
+                //     dayClass = new Day20();
+                //     break;
+                // case 21:
+                //     dayClass = new Day21();
+                //     break;
+                // case 23:
+                //     dayClass = new Day23();
+                //     break;
+                // case 24:
+                //     dayClass = new Day24();
+                //     break;
                 default:
                     throw new NotImplementedException();
             }
