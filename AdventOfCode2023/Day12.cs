@@ -1,13 +1,5 @@
 
-<<<<<<< HEAD
 
-=======
-<<<<<<< HEAD
-using System.ComponentModel.DataAnnotations;
-
-=======
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
 namespace AdventOfCode
 {
     public class Day12 : IDay
@@ -25,10 +17,6 @@ namespace AdventOfCode
                 var springs = line.Split(' ')[0].ToCharArray();
 
                 // if this is true possible solutions = 1
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                 if (springs.Length == numberBrokenStrings.Sum() + numberBrokenStrings.Length -1) {
                     possibleSolutions += 1;
                     Console.WriteLine($"Combinations found: 1");
@@ -171,11 +159,6 @@ namespace AdventOfCode
                 var springs = line.Split(' ')[0].ToCharArray();
 
                 // if this is true possible solutions = 1
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                 if (springs.Length == numberBrokenStrings.Sum() + numberBrokenStrings.Length -1){
                     possibleSolutions += 1;
                     continue;
@@ -184,14 +167,6 @@ namespace AdventOfCode
                 var possibleArrangements = new List<List<char>> {
                     new()
                 };
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-                var trialOutput = new List<char>();
-                var currentNumberBrokenStrings = numberBrokenStrings.First();
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                 
                 for (int i = 0; i < springs.Length; i++) {
                     var currentSpring = springs[i];
@@ -201,10 +176,6 @@ namespace AdventOfCode
                     }
 
                     if (i == 0) {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                         int numberToCheck = numberBrokenStrings.First();
                         CheckNextBlock(springs, i + 1, out char nextSpring, out int numberOfSpringsInNextBlock);
 
@@ -219,13 +190,6 @@ namespace AdventOfCode
                             possibleArrangements.Add(new List<char>() { '#' });
                         }
 
-<<<<<<< HEAD
-=======
-=======
-                        possibleArrangements.Add(new List<char>(){'.'});
-                        possibleArrangements.Add(new List<char>(){'#'});
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                         continue;
                     }
 
@@ -240,14 +204,7 @@ namespace AdventOfCode
                         continue;
                     }
 
-<<<<<<< HEAD
                     var complete = false;
-=======
-<<<<<<< HEAD
-                    var complete = false;
-=======
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                     for (int k = 0; k < possibleArrangements.Count; k++) {
                         var currentFoundCompleteSpringsInArrangment = 0;
                         var currentSpringBlockSize = 0;
@@ -260,34 +217,17 @@ namespace AdventOfCode
                             
                             if (currentSpringBlockSize == currentNumBrokenStrings) { 
                                 currentFoundCompleteSpringsInArrangment += 1;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                                 if(currentFoundCompleteSpringsInArrangment == numberBrokenStrings.Count()){
                                     complete = true;
                                     break;
                                 }
                                 currentNumBrokenStrings = numberBrokenStrings[currentFoundCompleteSpringsInArrangment];
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                             }
 
                             currentSpringBlockSize = 0;
                         }
 
-<<<<<<< HEAD
                         if (complete || currentSpringBlockSize > 0 && currentSpringBlockSize == currentNumBrokenStrings) { 
-=======
-<<<<<<< HEAD
-                        if (complete || currentSpringBlockSize > 0 && currentSpringBlockSize == currentNumBrokenStrings) { 
-=======
-                        if (currentSpringBlockSize == currentNumBrokenStrings) { 
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                             possibleArrangements[k].Add('.');
                             continue;
                         }
@@ -301,18 +241,8 @@ namespace AdventOfCode
                     }
                 }
 
-<<<<<<< HEAD
                 var numberOfRequiredSprings = numberBrokenStrings.Sum();
                 Console.WriteLine($"Required: {numberOfRequiredSprings}, possible: {possibleArrangements.Count()}, {possibleArrangements.Where(x => x.Count(x => x == '#') == numberOfRequiredSprings).Count().ToString()}");
-=======
-<<<<<<< HEAD
-                var numberOfRequiredSprings = numberBrokenStrings.Sum();
-                Console.WriteLine($"Required: {numberOfRequiredSprings}, possible: {possibleArrangements.Count()}, {possibleArrangements.Where(x => x.Count(x => x == '#') == numberOfRequiredSprings).Count().ToString()}");
-=======
-                var distinctArrangements = possibleArrangements.Distinct();
-                var numberOfRequiredSprings = numberBrokenStrings.Sum();
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
                 foreach (var possibleArrangement in possibleArrangements){
                     if (possibleArrangement.Count(x => x == '#') == numberOfRequiredSprings) {
                         possibleSolutions += 1;        
@@ -321,16 +251,5 @@ namespace AdventOfCode
             }
             return possibleSolutions.ToString();
         }
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
-
-        public string SolveB () {
-            return "B";
-        }
->>>>>>> 470a75e7c03b97e7c44d06132d4294ede5e0b0d6
->>>>>>> f7b926f958f28adebc58df575dc6a831815abf09
     }
 }
