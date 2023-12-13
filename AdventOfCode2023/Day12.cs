@@ -42,87 +42,95 @@ namespace AdventOfCode
                         combinations += (groups[i].ToCharArray().Length - numberBrokenStrings[i]) + 1;
                     }
                 }
-                else if (groups.Count() < numberBrokenStrings.Count()) {
-                    var index = 0;
-                    for (int y = 0; y < groups.Length; y++) {
-                        string? group = groups[y];
-                        var chars = group.Replace("?#", "?.#").Replace("#?", "#.?").Split('.');
-                        var currentUnsolvedNumber = numberBrokenStrings[index];
-                        var lengthUnused = 0;
-                        for (int k = 0; k < chars.Length; k++) {
-                            if (chars[k].First() == '#') {
-                                if (chars[k].Length == currentUnsolvedNumber){
-                                    index ++;
-                                    currentUnsolvedNumber = numberBrokenStrings[index];
-                                    lengthUnused = 0;
-                                    continue;
-                                }
+                else {
+                    var lastNumberOfSprings = numberBrokenStrings.Last();
+                    var minSpringsAndSpaces = numberBrokenStrings.Sum()  + numberBrokenStrings.Length - 1;
+                    var spaceForLastNumber = springs.Length - minSpringsAndSpaces + lastNumberOfSprings;
+                    var dotsAfterLastNumber = spaceForLastNumber - lastNumberOfSprings;
+                    var totalCombos = Factorial(dotsAfterLastNumber) + dotsAfterLastNumber + 1;
+                    
+                }
 
-                                lengthUnused += chars[k].Length;
-                            }
-                            else {
-                                var length = chars[k].Length;
-                                if (lengthUnused != 0) {
-                                    var nextLength = chars[k].Length + lengthUnused;
-                                    if (nextLength == currentUnsolvedNumber) {
-                                        index ++;
-                                        currentUnsolvedNumber = numberBrokenStrings[index];
-                                        lengthUnused = 0;
-                                        continue;
-                                    }
-                                    if (nextLength < currentUnsolvedNumber) {
-                                        lengthUnused += chars[k].Length;
-                                        continue;
-                                    }
-                                    if (nextLength > currentUnsolvedNumber) {
-                                        length -= (currentUnsolvedNumber - lengthUnused - 1);
-                                    }
-                                }
 
-                                if (length < currentUnsolvedNumber) {
-                                    lengthUnused += length;
-                                    continue;
-                                }
+                // else if (groups.Count() < numberBrokenStrings.Count()) {
+                //     var index = 0;
+                //     for (int y = 0; y < groups.Length; y++) {
+                //         string? group = groups[y];
+                //         var chars = group.Replace("?#", "?.#").Replace("#?", "#.?").Split('.');
+                //         var currentUnsolvedNumber = numberBrokenStrings[index];
+                //         var lengthUnused = 0;
+                //         for (int k = 0; k < chars.Length; k++) {
+                //             if (chars[k].First() == '#') {
+                //                 if (chars[k].Length == currentUnsolvedNumber){
+                //                     index ++;
+                //                     currentUnsolvedNumber = numberBrokenStrings[index];
+                //                     lengthUnused = 0;
+                //                     continue;
+                //                 }
 
-                                if (lengthUnused == 0) {
-                                    length -= 1; // for the .
-                                }
+                //                 lengthUnused += chars[k].Length;
+                //             }
+                //             else {
+                //                 var length = chars[k].Length;
+                //                 if (lengthUnused != 0) {
+                //                     var nextLength = chars[k].Length + lengthUnused;
+                //                     if (nextLength == currentUnsolvedNumber) {
+                //                         index ++;
+                //                         currentUnsolvedNumber = numberBrokenStrings[index];
+                //                         lengthUnused = 0;
+                //                         continue;
+                //                     }
+                //                     if (nextLength < currentUnsolvedNumber) {
+                //                         lengthUnused += chars[k].Length;
+                //                         continue;
+                //                     }
+                //                     if (nextLength > currentUnsolvedNumber) {
+                //                         length -= (currentUnsolvedNumber - lengthUnused - 1);
+                //                     }
+                //                 }
 
-                                var numbersToFit = new List<int>();
-                                var isLastGroup = k == chars.Length - 1;
+                //                 if (length < currentUnsolvedNumber) {
+                //                     lengthUnused += length;
+                //                     continue;
+                //                 }
 
-                                if (isLastGroup || length > currentUnsolvedNumber + 1) {
-                                    numbersToFit.Add(currentUnsolvedNumber);
-                                    var maxToFit = currentUnsolvedNumber + 2; // allow to "joining" .'s
-                                    for (int l = index + 1; l < numberBrokenStrings.Length; l++) {
-                                        if (isLastGroup || length > numberBrokenStrings[l] + maxToFit) {
-                                            numbersToFit.Add(numberBrokenStrings[l]);
-                                            maxToFit += numberBrokenStrings[l] + 1;
-                                            continue;
-                                        }
+                //                 if (lengthUnused == 0) {
+                //                     length -= 1; // for the .
+                //                 }
 
-                                        break;
-                                    }
+                //                 var numbersToFit = new List<int>();
+                //                 var isLastGroup = k == chars.Length - 1;
 
-                                    index += numbersToFit.Count;
-                                    var totalSpaceToFit = length - (isLastGroup ? 0 : 1);
-                                    if (totalSpaceToFit == numbersToFit.Sum() + numbersToFit.Count - 1){
-                                        continue;
-                                    }
+                //                 if (isLastGroup || length > currentUnsolvedNumber + 1) {
+                //                     numbersToFit.Add(currentUnsolvedNumber);
+                //                     var maxToFit = currentUnsolvedNumber + 2; // allow to "joining" .'s
+                //                     for (int l = index + 1; l < numberBrokenStrings.Length; l++) {
+                //                         if (isLastGroup || length > numberBrokenStrings[l] + maxToFit) {
+                //                             numbersToFit.Add(numberBrokenStrings[l]);
+                //                             maxToFit += numberBrokenStrings[l] + 1;
+                //                             continue;
+                //                         }
 
-                                    var spaceForLastNumber = totalSpaceToFit - (numbersToFit.Sum() + numbersToFit.Count - 1 - numbersToFit.Last());
-                                    var dotsAfterLastNumber = spaceForLastNumber - numbersToFit.Last();
-                                    combinations += Factorial(dotsAfterLastNumber) + dotsAfterLastNumber + 1;
-                                    // I don't have a fricking clue
-                                    //combinations += ((length - 1) - maxToFit) + 1;
-                                    continue;
-                                }
-                            }
-                        }
+                //                         break;
+                //                     }
+
+                //                     index += numbersToFit.Count;
+                //                     var totalSpaceToFit = length - (isLastGroup ? 0 : 1);
+                //                     if (totalSpaceToFit == numbersToFit.Sum() + numbersToFit.Count - 1){
+                //                         continue;
+                //                     }
+
+                //                     var spaceForLastNumber = totalSpaceToFit - (numbersToFit.Sum() + numbersToFit.Count - 1 - numbersToFit.Last());
+                //                     var dotsAfterLastNumber = spaceForLastNumber - numbersToFit.Last();
+                //                     combinations += Factorial(dotsAfterLastNumber) + dotsAfterLastNumber + 1;
+                //                     continue;
+                 //                }
+                //              }
+                //       }
 
                         
-                    }
-                }
+                //     }
+                // }
 
                 Console.WriteLine($"Combinations found: {Math.Max(1, combinations)}");
 
