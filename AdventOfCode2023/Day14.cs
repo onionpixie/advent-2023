@@ -28,7 +28,7 @@ namespace AdventOfCode
                 for (int j = 0; j < chars.Length; j++) {
                     if (i == 0) {
                         if (chars[j] == '.') {
-                            if (columnsWithRocks[j] == 0){
+                            if (columnsWithRocks[j] == 0) {
                                 rolledMatrix[i, j] = chars[j];
                             }
                             else {
@@ -38,6 +38,9 @@ namespace AdventOfCode
                         }
                         else {
                             rolledMatrix[i, j] = chars[j];
+                            if (chars[j] == 'O') {
+                                totalRockWeight += rows;
+                            }
                             totalRockWeight += ResolveStoredRocks(columnsWithRocks, rolledMatrix, i, j, rows);
                             continue;
                         }
@@ -59,6 +62,13 @@ namespace AdventOfCode
                 }
             }
             
+            for (int i = 0; i < rolledMatrix.GetLength(0); i++) {
+                for (int j = 0; j < rolledMatrix.GetLength(1); j++) {
+                    Console.Write(rolledMatrix[i,j]);
+                }
+                Console.WriteLine();
+            }
+            
             return totalRockWeight.ToString();
         }
 
@@ -67,9 +77,9 @@ namespace AdventOfCode
             var weightOfPlacedRocks = 0;
             for (int k = 0; k < columnsWithRocks[j]; k++) {
                 rolledMatrix[i + k + 1, j] = 'O';
-                weightOfPlacedRocks += (totalRows - (i + 1));
+                weightOfPlacedRocks += (totalRows - (i + k +1));
             }
-            // them empty rolled rocks
+            // then empty rolled rocks
             columnsWithRocks[j] = 0;
 
             return weightOfPlacedRocks;
